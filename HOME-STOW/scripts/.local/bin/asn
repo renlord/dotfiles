@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if command -v whois > /dev/null; then
+    whois -h whois.cymru.com "-v $1"
+    exit 0
+else
+    echo "ERR: whois not installed"
+fi

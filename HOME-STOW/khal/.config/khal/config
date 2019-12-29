@@ -1,0 +1,13 @@
+[calendars]
+  [[academia]]
+    path = ~/.calendar/academia/
+    color = dark red
+  [[personal]]
+    path = ~/.calendar/personal/
+    color = dark blue
+  [[work]]
+    path = ~/.calendar/work
+    color = dark green
+  [[kyrl]]
+    path = ~/.calendar/kyrl
+    color = dark magenta

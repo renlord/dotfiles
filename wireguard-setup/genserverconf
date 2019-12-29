@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+KEY_FILE=eq908.key.gpg
+
+# decrypt server private key and read into memory
+PRIVATE_KEY="$(gpg -d eq908.key.gpg)"
+
+cat > "eq908-wg0.conf" <<- EOM
+[Interface]
+PrivateKey=${PRIVATE_KEY}
+Address=10.200.200.1/32
+ListenPort=51302
+
+PostUp = iptables -I FORWARD 1 -i %i -j ACCEPT; iptables -I FORWARD 1 -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+EOM
+
+WG_FILE="$(pwd)/eq908-wg0.conf"
+
+insert_peer() {
+n_peer="$1"
+cat >> "eq908-wg0.conf" <<- EOM
+[Peer]
+PublicKey=$(sed -n $(($n_peer+1))p client.list)
+AllowedIPs=10.200.200.${n_peer}/32
+PersistentKeepalive=30
+
+EOM
+}
+
+# iterate through all public keys to insert peer
+nkeys="$(wc -l < client.list)"
+i=2
+while [ "$i" -lt "$nkeys" ]; do
+    insert_peer $i
+    i=$((i+1))
+done

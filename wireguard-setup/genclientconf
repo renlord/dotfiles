@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# This script generates a new client config file to use a designated VPN gateway
+# to tunnel through
+
+# name of client
+CLIENT=$1
+
+if [ ! -f $CLIENT-wg.conf ]; then 
+    PRIVATE="$(wg genkey)"
+    PUBLIC="$(echo "${PRIVATE}" | wg pubkey)"
+
+    cp client.tmpl clients/$CLIENT-wg.conf || exit 1
+    cd clients 
+    sed -i "s|PRIVATE_STUB|${PRIVATE}|g" "$CLIENT"-wg.conf
+    sed -i "s|PEER_PUBLIC|${PUBLIC}|g" "$CLIENT"-wg.conf
+
+    NUM=$(wc -l < ../client.list)
+    echo ${PUBLIC} >> ../client.list
+
+    sed -i "s|ADDRESS_STUB|10.200.200.${NUM}/32|g" $CLIENT-wg.conf
+
+    qrencode -t ansiutf8 < $CLIENT-wg.conf
+else
+    echo "CLIENT CONFIG ALREADY EXIST"
+    qrencode -t ansiutf8 < $CLIENT-wg.conf
+    exit 1
+fi

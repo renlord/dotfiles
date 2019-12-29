@@ -1,0 +1,8 @@
+Requires GNU Stow
+
+Run `stow *`
+
+Sensitive information stubbed with `PATCH_ME`.
+`git am --nowarn=whitespace ../*.patch` to apply blinded sensitive information.
+
+When making changes, revert patch, change then commit and reproduce the patch.

@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import subprocess
+import os.path
+
+lines = open('faces.txt').readlines()
+for line in lines:
+    line = line.split(',')
+    img = line[0][2:]
+    left = int(line[4])
+    top = int(line[1])
+    width = int(line[2]) - left
+    height = int(line[3]) - top
+    i = 0
+    filename = f"{img}-out-{i}.jpg"
+    while os.path.isfile(filename):
+        i += 1
+        filename = f"{img}-out-{i}.jpg"
+    subprocess.call(["convert", img, "-crop", f"{width}x{height}+{left}+{top}", f"{img}-out.jpg"])

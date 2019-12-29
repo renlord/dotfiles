@@ -1,0 +1,19 @@
+[user]
+    email = PATCH_ME
+    name = PATCH_ME
+    signingkey = PATCH_ME
+[push]
+    default = simple
+[core]
+    editor = nvim
+[mergetool]
+    prompt = true
+[diff]
+    tool = vimdiff
+[merge]
+    tool = vimdiff
+    conflictstyle = diff3
+[mergetool "vimdiff"]
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[color]
+	ui = auto

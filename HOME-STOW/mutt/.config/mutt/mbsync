@@ -1,0 +1,23 @@
+set folder = ~/.mail/personal/
+set spoolfile = +INBOX
+set postponed="+Drafts"
+set record ="+Sent"
+set trash='+Trash'
+set mbox='+INBOX'
+
+set from = 'PATCH_ME'
+set realname = 'PATCH_ME'
+
+set smtp_url = "PATCH_ME"
+set smtp_pass = "PATCH_ME"
+set smtp_authenticators = "plain"
+set ssl_force_tls = yes
+set move = no
+
+set header_cache = "~/.mutt/cache/headers"
+set message_cachedir = "~/.mutt/cache/bodies"
+
+
+mailboxes `find ~/.mail/personal/* -maxdepth 1 -type d | grep -v "tmp\|new\|cur" | sed -E 's|/home/(rl\|renlord)/.mail/personal|=\"|g' | sed 's|$|\"|g' | tr '\n' ' '`
+
+shutdown-hook 'exec mbsync -a'

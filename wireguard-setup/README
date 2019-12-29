@@ -1,0 +1,24 @@
+`client.list` contains the list of public keys that are authorized to use
+the VPN tunnel.
+
+`eq908-client.tmpl` is the wireguard VPN tunnel configuration template file
+used by `./genclientconf` to produce a plug-and-play client configuration file.
+Either import configuration via QR code, or use conventional file transfer methods.
+
+`*.key.gpg` is the encrypted private key for the VPN tunnel gateway.
+Hack this, and you gain full control over the entire VPN (maybe).
+
+`./genclientconf` takes a ${NAME} as its $1 argument and outputs `clients/${NAME}.conf`.
+
+`./genserverconf` consumes `client.list` to produce a server-specific wireguard VPN
+configuration file that can also be plug-and-play.
+
+Networking Changes:
+```
+PostUp = iptables -I FORWARD 1 -i %i -j ACCEPT; iptables -I 1 FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+```
+
+The forwarding chain rules are added because the assumption is made that the default policy for the FORWARD chain is DROP.
+Applied both times, one for %i (incoming); one for %i (outgoing).
+Often shared configurations in the internet leave out the necessary configuration for %i (outgoing) which causes issues.

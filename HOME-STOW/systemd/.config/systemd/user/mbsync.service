@@ -1,0 +1,9 @@
+[Unit]
+Description=Synchronize imap server
+
+[Service]
+ExecStart=/usr/bin/mbsync -a
+Type=oneshot
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,60 @@
+# Settings for isync, a program to syncronise IMAP mailboxes
+# This file defines the syncronisation for two accounts, personal and work
+# The remote for each account is a server somewhere, and the local is a folder 
+# in ~/.mail
+# Syncronise everything with `mbsync -a`
+
+########################################
+# Default settings
+# Applied to all channels
+########################################
+Create Slave
+Remove Both
+Expunge Both
+SyncState *
+
+########################################
+# FastMail
+########################################
+IMAPAccount personal
+Host PATCH_ME
+User PATCH_ME
+Pass PATCH_ME
+AuthMechs *
+SSLType IMAPS
+
+# Remote storage (where the mail is retrieved from)
+IMAPStore personal-remote
+Account personal
+
+# Local storage (where the mail is retrieved to)
+MaildirStore personal-local
+Path ~/.mail/personal/
+Inbox ~/.mail/personal/INBOX
+SubFolders Verbatim
+
+Channel personal-inbox
+Master :personal-remote:INBOX
+Slave :personal-local:INBOX
+
+Channel personal-drafts
+Master :personal-remote:Drafts
+Slave :personal-local:Drafts
+
+Channel personal-sent
+Master :personal-remote:Sent
+Slave :personal-local:Sent
+
+Channel personal-spam
+Master :personal-remote:Spam
+Slave :personal-local:Spam
+
+Channel personal-trash
+Master :personal-remote:Trash
+Slave :personal-local:Trash
+
+Channel personal-folders
+Master :personal-remote:
+Slave :personal-local:
+# All folders except those defined above
+Patterns * !INBOX !Archive !Drafts !Sent !Spam !Trash

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+autossh -M 30000 -f -nNT -L 36666:localhost:36666 sleepybird > /tmp/autossh.log
