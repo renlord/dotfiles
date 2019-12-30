@@ -177,7 +177,6 @@ workspace 1 output DP-1
 # finds out, if available)
 bar {
         status_command i3status
-        output Primary
         #status_command python /usr/lib/python3.6/site-packages/powerline/bindings/i3/powerline-i3.py
         #font pango:PowerlineFont 12
 }
