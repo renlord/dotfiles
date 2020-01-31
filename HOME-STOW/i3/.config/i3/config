@@ -145,14 +145,9 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Pulse Audio controls
-
-# Pulse Audio controls
-#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') +5% #increase sound volume (HHKB: Fn + a)
-#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') -5% #decrease sound volume (HHKB: Fn + s)
-#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') toggle # mute sound (HHKB: Fn + d)
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'analog-stereo' | awk '{print $1}') +5% #increase sound volume (HHKB: Fn + a)
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'analog-stereo' | awk '{print $1}') -5% #decrease sound volume (HHKB: Fn + s)
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute $(pactl list sinks short | grep -i 'analog-stereo' | awk '{print $1}') toggle # mute sound (HHKB: Fn + d)
+bindsym XF86AudioRaiseVolume exec --no-startup-id $HOME/.config/i3/volume-control volume_up
+bindsym XF86AudioLowerVolume exec --no-startup-id $HOME/.config/i3/volume-control volume_down  #decrease sound volume (HHKB: Fn + s)
+bindsym XF86AudioMute exec --no-startup-id $HOME/.config/i3/volume-control volume_mute # mute sound (HHKB: Fn + d)
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle #mute mic (HHKB: Fn + f)
 
 # Sreen brightness controls
@@ -160,7 +155,7 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
 
 # Touchpad controls
-bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
+bindsym XF86TouchpadToggle exec $HOME/.config/i3/toggletouchpad # toggle touchpad
 
 # Media player controls
 bindsym $mod+Mod1+p exec playerctl play-pause
