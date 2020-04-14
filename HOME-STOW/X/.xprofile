@@ -40,9 +40,12 @@ if [ "$HOSTNAME" =  "pato" ]; then
     #xinput set-prop 12 289 1
 fi
 
+PRIMARY_MONITOR=HDMI-0
+SECONDARY_MONITOR=DVI-I-1
+
 if [ $HOSTNAME = "pocoyo" ]; then
-    xrandr --output DP-1 --primary
-    xrandr --output DVI-I-1 --rotate left --right-of DP-1
+    xrandr --output $PRIMARY_MONITOR --primary
+    xrandr --output $SECONDARY_MONITOR --rotate left --right-of $PRIMARY_MONITOR
     if [ ! -z $MOUSE_ID ]; then
         MOUSE_ID=$(xinput list | grep 'MX Master 2S Mouse' | awk -F= '{print $2}' | awk '{print $1}')
         xinput set-prop $MOUSE_ID "Coordinate Transformation Matrix" 1 0 0 0 1 0 0 0 0.3

@@ -59,7 +59,7 @@ auto_view text/x-vcard text/html text/enriched
 auto_view text/calendar application/ics
 
 # KHARD
-set query_command= "khard email --parsable --search-in-source-files '%s'"
+set query_command= "ag '%s' ~/.config/mutt/aliases; khard email --parsable --search-in-source-files '%s'"
 bind editor <Tab> complete-query
 bind editor ^T    complete
 macro index,pager A \
