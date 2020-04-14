@@ -29,6 +29,7 @@ Plug 'junegunn/fzf'
 Plug 'morhetz/gruvbox'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mileszs/ack.vim'
+Plug 'junegunn/goyo.vim'
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -45,7 +46,7 @@ set ts=4
 set sw=4
 set expandtab
 syntax on
-"set foldmethod=syntax
+set foldmethod=syntax
 set laststatus=1
 set autoread
 set wildmenu
@@ -89,15 +90,6 @@ endfunction
 autocmd Filetype rs call SetRustOptions()
 autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
 autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
-
-function SetJsOptions()
-    setlocal ts=2
-    setlocal sw=2
-    setlocal noexpandtab
-endfunction
-autocmd Filetype js call SetJsOptions()
-autocmd Filetype javascript call SetJsOptions()
-
 
 """""""""""""""""""""""""""""""""""""""""""""""
 " Keymaps
@@ -195,3 +187,8 @@ set signcolumn=yes
 
 "Gutentags
 let g:gutentags_define_advanced_commands=1
+
+" Goyo config
+let g:goyo_width=120
+let g:goyo_height="100%"
+let g:goyo_linenr=1
