@@ -56,7 +56,8 @@ set listchars=tab:→\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
 set showbreak=↪
 " ignore case match when searching in current file
 set ic
-
+" continuously search for tag file up to HOME
+set tags=tags;~/
 
 let s:uname = system("echo -n \"$(uname)\"")
 if has("unix")
@@ -160,6 +161,7 @@ xmap <C-k>     <Plug>(neosnippet_expand_target)
 " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+let g:neosnippet#snippets_directory='~/.config/bundle/vim-snippets/snippets'
 
 " For conceal markers.
 "if has('conceal')
@@ -192,3 +194,31 @@ let g:gutentags_define_advanced_commands=1
 let g:goyo_width=120
 let g:goyo_height="100%"
 let g:goyo_linenr=1
+
+function! s:goyo_enter()
+  "if executable('tmux') && strlen($TMUX)
+  "  silent !tmux set status off
+  "  silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  "endif
+  set noshowmode
+  set noshowcmd
+  set scrolloff=999
+  " ...
+endfunction
+
+function! s:goyo_leave()
+  "if executable('tmux') && strlen($TMUX)
+  "  silent !tmux set status on
+  "  silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  "endif
+  set showmode
+  set showcmd
+  set scrolloff=5
+  " ...
+endfunction
+
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
+
+" Rust.vim 
+let g:rustfmt_autosave = 1
