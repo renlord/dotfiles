@@ -1,11 +1,24 @@
 set runtimepath+=~/.nvim,~/.nvim/after
 set packpath+=~/.nvim
+
 call plug#begin('~/.nvim/plugged')
 " The following are examples of different formats supported.
 " Keep Plug commands between vundle#begin/end.
 " plugin on GitHub repo
-Plug 'tpope/vim-fugitive'
+if has('nvim')
+    Plug 'Shougo/deoplete.nvim', {'do': 'UpdateRemotePlugins'} 
+else
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+endif
+" Duoplete Misc. Language Extensions
+Plug 'sebastianmarkow/deoplete-rust'
+
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
 Plug 'w0rp/ale'
+Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'Raimondi/delimitMate'
@@ -15,16 +28,12 @@ Plug 'git://github.com/ctrlpvim/ctrlp.vim.git'
 Plug 'pangloss/vim-javascript'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Chiel92/vim-autoformat'
-Plug 'rust-lang/rust.vim'
 Plug 'benmills/vimux'
-Plug 'Shougo/deoplete.nvim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tomlion/vim-solidity'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'lervag/vimtex'
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
 Plug 'junegunn/fzf'
 Plug 'morhetz/gruvbox'
 Plug 'dhruvasagar/vim-table-mode'
@@ -77,20 +86,11 @@ set omnifunc=syntaxcomplete#Complete
 "
 """"""""""""""""""""""""""""""""""""""""""""""""
 
-au BufRead,BufNewFile *.pp set filetype=puppet
-au BufRead,BufNewFile Vagrantfile set filetype=ruby
-
 function SetEnglishOptions()
     map ^T :w!<CR>:!aspell check %<CR>:e! %<CR>
 endfunction
 autocmd Filetype tex call SetEnglishOptions()
 autocmd Filetype mail call SetEnglishOptions()
-
-function SetRustOptions()
-endfunction
-autocmd Filetype rs call SetRustOptions()
-autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/
-autocmd BufWritePost *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&" | redraw!
 
 """""""""""""""""""""""""""""""""""""""""""""""
 " Keymaps
@@ -128,14 +128,17 @@ let g:airline_powerline_fonts = 1
 let g:deoplete#enable_at_startup = 1
 
 " ALE
-let g:ale_linters = {
-            \ 'javascript': ['xo'],
-            \ }
 let g:ale_fix_on_save = 1
+let g:ale_completion_enabled = 1
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\   'rust': ['analyzer', 'rls'],
+\}
 
-" Javascript
-let g:formatters_js = ['xo']
-let g:jsx_ext_required = 1
+nnoremap <Leader>t :ALESymbolSearch
+nnoremap <Leader>d :ALEGoToDefinition <CR>
+nnoremap <Leader>r :ALEFindReferences <CR>
+
 
 " Email
 au FileType mail let b:delimitMate_autoclose = 0
@@ -161,7 +164,9 @@ xmap <C-k>     <Plug>(neosnippet_expand_target)
 " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-let g:neosnippet#snippets_directory='~/.config/bundle/vim-snippets/snippets'
+let g:neosnippet#snippets_directory='~/.nvim/bundle/vim-snippets/snippets'
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
 
 " For conceal markers.
 "if has('conceal')
