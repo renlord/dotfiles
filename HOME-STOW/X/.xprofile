@@ -40,7 +40,7 @@ if [ "$HOSTNAME" =  "pato" ]; then
     #xinput set-prop 12 289 1
 fi
 
-PRIMARY_MONITOR=HDMI-0
+PRIMARY_MONITOR=DP-1
 SECONDARY_MONITOR=DVI-I-1
 
 if [ $HOSTNAME = "pocoyo" ]; then
