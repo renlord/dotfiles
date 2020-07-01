@@ -17,3 +17,5 @@
     cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [color]
 	ui = auto
+[pull]
+    ff = only
