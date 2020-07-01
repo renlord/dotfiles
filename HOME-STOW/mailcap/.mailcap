@@ -1,3 +1,6 @@
 text/html;  /usr/bin/w3m -o display_link_number=1 -dump -T text/html '%s'; copiousoutput; nametemplate=%s.html
 text/calendar; mutt-ics; copiousoutput
 application/ics; mutt-ics; copiousoutput 
+application/pdf; zathura %s; copiousoutput
+image/jpeg; feh %s; copiousoutput
+image/png; feh %s; copiousoutput
