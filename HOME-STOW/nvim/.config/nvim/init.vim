@@ -54,7 +54,6 @@ set backspace=indent,eol,start
 set ts=4
 set sw=4
 set expandtab
-syntax on
 set foldmethod=syntax
 set laststatus=1
 set autoread
@@ -67,6 +66,8 @@ set showbreak=↪
 set ic
 " continuously search for tag file up to HOME
 set tags=tags;~/
+set signcolumn=yes
+syntax on
 
 let s:uname = system("echo -n \"$(uname)\"")
 if has("unix")
@@ -79,7 +80,6 @@ if has("unix")
 endif
 
 filetype plugin on
-set omnifunc=syntaxcomplete#Complete
 
 """"""""""""""""""""""""""""""""""""""""""""""""
 " File-specific configurations
@@ -91,6 +91,9 @@ function SetEnglishOptions()
 endfunction
 autocmd Filetype tex call SetEnglishOptions()
 autocmd Filetype mail call SetEnglishOptions()
+
+" Email
+au FileType mail let b:delimitMate_autoclose = 0
 
 """""""""""""""""""""""""""""""""""""""""""""""
 " Keymaps
@@ -106,10 +109,10 @@ nnoremap k gk
 nnoremap <c-s-b> :CtrlPBuffer<CR>
 
 " Use ctrl-[hjkl] to select the active split!
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
+nnoremap <silent> <c-k> :wincmd k<CR>
+nnoremap <silent> <c-j> :wincmd j<CR>
+nnoremap <silent> <c-h> :wincmd h<CR>
+nnoremap <silent> <c-l> :wincmd l<CR>
 
 " Leader
 :let mapleader = ";"
@@ -120,12 +123,15 @@ nmap <silent> <c-l> :wincmd l<CR>
 " Plugin Configuration
 "
 """""""""""""""""""""""""""""""""""""""""""""""
+"Ack.vim
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep --ignore=tags'
+  map <C-f> :Ack<space>
+endif
+
 " Airline
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
-
-" Duoplete
-let g:deoplete#enable_at_startup = 1
 
 " ALE
 let g:ale_fix_on_save = 1
@@ -133,15 +139,28 @@ let g:ale_completion_enabled = 1
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'rust': ['analyzer', 'rls'],
+\   'c': ['clangd'],
+\   'cpp': ['clangd'],
+\   'sh': ['shellcheck'],
 \}
+" Enable completion where available.
+" This setting must be set before ALE is loaded.
+"
+" You should not turn this setting on if you wish to use ALE as a completion
+" source for other completion plugins, like Deoplete.
+set omnifunc=ale#completion#OmniFunc
 
-nnoremap <Leader>t :ALESymbolSearch
-nnoremap <Leader>d :ALEGoToDefinition <CR>
-nnoremap <Leader>r :ALEFindReferences <CR>
+" ALE Keymaps <Alt> key designated for ALE
+nnoremap <A-t> :ALESymbolSearch
+nnoremap <silent> <A-d> :ALEGoToDefinition<CR>
+nnoremap <silent> <A-r> :ALEFindReferences<CR>
 
+nnoremap <silent> <A-k> <Plug>(ale_previous_wrap)
+nnoremap <silent> <A-j> <Plug>(ale_next_wrap)
 
-" Email
-au FileType mail let b:delimitMate_autoclose = 0
+" Duoplete
+let g:deoplete#enable_at_startup = 1
+let g:airline#extensions#ale#enabled = 1
 
 " VimTex
 let g:tex_flavor='latex'
@@ -152,9 +171,9 @@ let g:vimtex_compiler_progname = 'nvr'
 
 " Neosnippet key-mappings.
 " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
+inoremap <C-k>     <Plug>(neosnippet_expand_or_jump)
+snoremap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xnoremap <C-k>     <Plug>(neosnippet_expand_target)
 
 " SuperTab like snippets behavior.
 " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
@@ -168,29 +187,8 @@ let g:neosnippet#snippets_directory='~/.nvim/bundle/vim-snippets/snippets'
 " Enable snipMate compatibility feature.
 let g:neosnippet#enable_snipmate_compatibility = 1
 
-" For conceal markers.
-"if has('conceal')
-"  set conceallevel=2 concealcursor=niv
-"endif
-
 " NERDTree
 map <C-n> :NERDTreeToggle<CR>
-
-"let g:LanguageClient_serverCommands = {
-"    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-"    \ 'cpp': ['clangd'],
-"    \ 'c': ['clangd'],
-"    \ 'python': ['/usr/local/bin/pyls'],
-"    \ }
-"let g:LanguageClient_serverStderr = '/tmp/language-client-nvim.stderr'
-
-"Ack.vim
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep --ignore=tags'
-  map <C-f> :Ack<space>
-endif
-
-set signcolumn=yes
 
 "Gutentags
 let g:gutentags_define_advanced_commands=1
