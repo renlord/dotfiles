@@ -56,7 +56,7 @@ alias cclip="xclip -selection clipboard"
 alias ls='ls --color=auto'
 alias ll="ls -la"
 
-export PATH=${PATH}:"$HOME/.local/bin":"$HOME/Application"
+export PATH=${PATH}:"$HOME/.local/bin":"$HOME/Desktop/"
 export EDITOR=nvim
 export DOTFILE_DIR=$HOME/dotfiles/
 

@@ -4,8 +4,12 @@ androiddev() {
     export PATH=/mnt/research/android-dev/bin/:$PATH:/mnt/research/android-dev/depot_tools/:/mnt/research/android-dev/:/mnt/research/android-dev/android-studio/bin
 }
 graphenedev() {
-    cd /mnt/research/GrapheneOS
-    export PATH=/mnt/research/android-dev/bin/:$PATH:/mnt/research/android-dev/depot_tools/:/mnt/research/android-dev/
+    cd /mnt/research/GrapheneOS || exit 1
+    export PATH=/mnt/research/android-dev/bin/:$PATH:/mnt/research/android-dev/depot_tools/:/mnt/research/android-dev/:/opt/android-studio/bin/
+
+    unzip() {
+        bsdtar -xf $1
+    }
 }
 
 graphenegoto() {
