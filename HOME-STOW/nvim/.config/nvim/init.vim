@@ -72,7 +72,7 @@ syntax on
 let s:uname = system("echo -n \"$(uname)\"")
 if has("unix")
     if s:uname == "Linux"
-        set clipboard=unnamedplus
+        set clipboard+=unnamedplus
     endif
     if s:uname == "Darwin"
         set clipboard+=unnamed
@@ -142,6 +142,7 @@ let g:ale_linters = {
 \   'c': ['clangd'],
 \   'cpp': ['clangd'],
 \   'sh': ['shellcheck'],
+\   'go': ['gopls']
 \}
 " Enable completion where available.
 " This setting must be set before ALE is loaded.
@@ -151,9 +152,13 @@ let g:ale_linters = {
 set omnifunc=ale#completion#OmniFunc
 
 " ALE Keymaps <Alt> key designated for ALE
-nnoremap <A-t> :ALESymbolSearch
-nnoremap <silent> <A-d> :ALEGoToDefinition<CR>
-nnoremap <silent> <A-r> :ALEFindReferences<CR>
+"nnoremap <A-s> :ALESymbolSearch
+"nnoremap <silent> <A-d> :ALEGoToDefinition<CR>
+"nnoremap <silent> <A-r> :ALEFindReferences<CR>
+nnoremap gs :ALESymbolSearch
+nnoremap <silent> gd :ALEGoToDefinition<CR>
+nnoremap <silent> gr :ALEFindReferences<CR>
+
 
 nnoremap <silent> <A-k> <Plug>(ale_previous_wrap)
 nnoremap <silent> <A-j> <Plug>(ale_next_wrap)
