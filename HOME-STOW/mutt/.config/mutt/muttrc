@@ -3,7 +3,7 @@ set header_cache="~/.config/mutt"
 
 # Default account
 #source ~/.config/mutt/account.fastmail
-source ~/.config/mutt/mbsync
+source ~/.config/mutt/renlord.com/config
 set signature="~/.config/mutt/signature"
 
 set editor='nvim'
@@ -59,7 +59,7 @@ set pgp_self_encrypt = yes
 auto_view text/x-vcard text/html text/enriched
 auto_view text/calendar application/ics
 
-# KHARD
+# KHARD (Contact List Management)
 set query_command= "khard email --parsable --search-in-source-files '%s'"
 bind editor <Tab> complete-query
 bind editor ^T    complete
@@ -76,6 +76,70 @@ set new_mail_command="notify-send 'New Email' '%n new messages, %u unread.' &"
 
 bind index,pager \` sidebar-toggle-visible
 
+# This option allows you to edit the header of your outgoing messages along with the body of your message.
+set edit_headers=yes
+
 # alias file
 source ~/.config/mutt/aliases
 set alias_file=~/.config/mutt/aliases
+
+# Ask if the user wishes to abort sending if $abort_noattach_regex is found in the
+# body, but no attachments have been added
+# It can be set to:
+#    "yes"     : always abort
+#    "ask-yes" : ask whether to abort
+#    "no"      : send the mail
+set abort_noattach = ask-yes
+# Search for the following regular expression in the body of the email
+# English: attach, attached, attachment, attachments
+set abort_noattach_regex = "\\<attach(|ed|ments?)\\>"
+
+# Color if the attachment is autoviewed
+color   attach_headers     brightgreen     default    "Autoview"
+# Color only the brackets around the headers
+color   attach_headers     brightyellow    default    "^\\[--"
+color   attach_headers     brightyellow    default    "--]$"
+# Color the mime type and the size
+color   attach_headers     green           default    "Type: [a-z]+/[a-z0-9\-]+"
+color   attach_headers     green           default    "Size: [0-9\.]+[KM]"
+# Color GPGME signature checks
+color   attach_headers     brightgreen     default    "Good signature from.*"
+color   attach_headers     brightred       default    "Bad signature from.*"
+color   attach_headers     brightred       default    "BAD signature from.*"
+color   attach_headers     brightred       default    "Note: This key has expired!"
+color   attach_headers     brightmagenta   default    "Problem signature from.*"
+color   attach_headers     brightmagenta   default    "WARNING: This key is not certified with a trusted signature!"
+color   attach_headers     brightmagenta   default    "         There is no indication that the signature belongs to the owner."
+color   attach_headers     brightmagenta   default    "can't handle these multiple signatures"
+color   attach_headers     brightmagenta   default    "signature verification suppressed"
+color   attach_headers     brightmagenta   default    "invalid node with packet of type"
+
+set sidebar_short_path
+set sidebar_delim_chars="/"
+set sidebar_folder_indent
+set sidebar_indent_string="  "
+
+color sidebar_indicator default color17         # Dark blue background
+color sidebar_highlight white   color238        # Grey background
+color sidebar_spoolfile yellow  default         # Yellow
+color sidebar_new       green   default         # Green
+color sidebar_ordinary  default default         # Default colors
+color sidebar_flagged   red     default         # Red
+color sidebar_divider   color8  default         # Dark grey
+
+# EMAIL Folder Layouts
+set folder = ~/.mail/personal/
+
+set spoolfile = +INBOX
+set postponed="+Drafts"
+set record ="+Sent"
+set trash='+Trash'
+set mbox='+INBOX'
+
+set header_cache = "~/.mutt/cache/headers"
+set message_cachedir = "~/.mutt/cache/bodies"
+
+# a useful regex to help automatically populate mailboxes on host
+mailboxes `find ~/.mail/personal/* -maxdepth 1 -type d | grep -v "tmp\|new\|cur" | sed -E 's|/home/(rl\|renlord)/.mail/personal/|=\"|g' | sed 's|$|\"|g' | tr '\n' ' '`
+
+shutdown-hook 'exec mbsync -a'
