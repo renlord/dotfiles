@@ -1,0 +1,8 @@
+set from = 'PATCH_ME'
+set realname = 'PATCH_ME'
+
+set smtp_url = "PATCH_ME"
+set smtp_pass = "PATCH_ME"
+set smtp_authenticators = "plain"
+set ssl_force_tls = yes
+set move = no
