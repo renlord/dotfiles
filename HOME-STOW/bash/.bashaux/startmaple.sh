@@ -3,7 +3,7 @@
 startmaple() {
     [[ -z $1 ]] && WINDOWNAME=MapleLegends || WINDOWNAME=$1
     cd ~/.wine/drive_c/MapleLegendsHD/ || exit 1
-    WINEARCH=win32 WINEDEBUG=-all wine explorer /desktop=$WINDOWNAME,1366x768 MapleLegends.exe
+    WINEARCH=win32 WINEDEBUG=-all wine explorer /desktop=$WINDOWNAME,1024x768 MapleLegends.exe
 }
 
 startgunbound() {

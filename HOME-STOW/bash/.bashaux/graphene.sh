@@ -2,6 +2,7 @@
 
 androiddev() {
     export PATH=/mnt/research/android-dev/bin/:$PATH:/mnt/research/android-dev/depot_tools/:/mnt/research/android-dev/:/mnt/research/android-dev/android-studio/bin
+    export ANDROID_SDK_ROOT=/mnt/research/android-dev/sdk/
 }
 graphenedev() {
     cd /mnt/research/GrapheneOS || exit 1
@@ -15,10 +16,10 @@ graphenedev() {
 graphenects() {
     unset ANDROID_HOME
     export ANDROID_HOME=/mnt/research/android-dev/sdk/
-    export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/29.0.2:$ANDROID_HOME/ndk-bundle"
+    export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/30.0.2:$ANDROID_HOME/ndk-bundle"
 }
 
-graphenegoto() {
-    local BASEDIR=/mnt/research/GrapheneOS/grapheneos-10
+graphene11goto() {
+    local BASEDIR=/mnt/research/GrapheneOS/grapheneos-11
     [ -d $BASEDIR/$1 ] && cd "$BASEDIR/$1" || echo "$BASEDIR/$1 does not exist"
 }
