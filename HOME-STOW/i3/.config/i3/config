@@ -13,11 +13,10 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-#font pango:Fira Mono for Powerline, Inconsolata Nerd Font 8
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 7
+font pango:DejaVu Sans Mono 9
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -30,13 +29,13 @@ font pango:DejaVu Sans Mono 7
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec "WINIT_HIDPI_FACTOR=1 alacritty -v"
+bindsym $mod+Return exec "alacritty -v"
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start rofi (a program launcher)
-bindsym $mod+d exec rofi -show run -eh 2 -padding 16
+bindsym $mod+d exec rofi -show combi
 
 # change focus
 bindsym $mod+h focus left
@@ -148,9 +147,12 @@ bindsym $mod+r mode "resize"
 # Pulse Audio controls
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') +5% #increase sound volume (HHKB: Fn + a)
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') -5% #decrease sound volume (HHKB: Fn + s)
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') toggle # mute sound (HHKB: Fn + d)
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') +5% #increase sound volume (HHKB: Fn + a)
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') -5% #decrease sound volume (HHKB: Fn + s)
+#bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute $(pactl list sinks short | grep -i 'bluez' | awk '{print $1}') toggle # mute sound (HHKB: Fn + d)
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'analog-stereo' | awk '{print $1}') +5% #increase sound volume (HHKB: Fn + a)
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $(pactl list sinks short | grep -i 'analog-stereo' | awk '{print $1}') -5% #decrease sound volume (HHKB: Fn + s)
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute $(pactl list sinks short | grep -i 'analog-stereo' | awk '{print $1}') toggle # mute sound (HHKB: Fn + d)
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle #mute mic (HHKB: Fn + f)
 
 # Sreen brightness controls
@@ -161,22 +163,24 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightne
 bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
 
 # Media player controls
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+bindsym $mod+Mod1+p exec playerctl play-pause
+bindsym $mod+Mod1+j exec playerctl previous
+bindsym $mod+Mod1+k exec playerctl next
 
 bindsym $mod+m move workspace to output bottom
 bindsym $mod+p exec /usr/bin/i3lock-fancy
 
 # workspace locations
-workspace 10 output DVI-I-1
-workspace 1 output DP-1
+workspace 10 output DP-1
+workspace 1 output HDMI-0
+
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
+        output primary
         status_command i3status
+        tray_output primary
         #status_command python /usr/lib/python3.6/site-packages/powerline/bindings/i3/powerline-i3.py
         #font pango:PowerlineFont 12
 }
