@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -x
-
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
@@ -46,13 +44,13 @@ PRIMARY_MONITOR=HDMI-0
 SECONDARY_MONITOR=DP-1
 
 if [ $HOSTNAME = "pocoyo" ]; then
-    xrandr --output $PRIMARY_MONITOR --primary
-    #xrandr --output $SECONDARY_MONITOR --rotate left --right-of $PRIMARY_MONITOR
-    xrandr --output $SECONDARY_MONITOR --right-of $PRIMARY_MONITOR
+    xrandr --output $PRIMARY_MONITOR --primary 
+    xrandr --output $SECONDARY_MONITOR --above $PRIMARY_MONITOR --mode 2560x1440
     MOUSE_ID=$(xinput list | grep 'MX Master 2S Mouse' | awk -F= '{print $2}' | awk '{print $1}')
     if [ ! -z $MOUSE_ID ]; then
         xinput set-prop $MOUSE_ID "Coordinate Transformation Matrix" 1 0 0 0 1 0 0 0 1
     fi
+    #Razer DeathAdder Mouse
     RAZER_MOUSE_ID="$(xinput | awk '/Razer DeathAdder/ {print $6}' | cut -c 4-)"
     if [ ! -z $RAZER_MOUSE_ID ]; then
         # reduce razor mouse sensitivity by a factor of 0.7
@@ -63,4 +61,4 @@ fi
 
 export GTK_IM_MODULE=fcitx
 
-/home/rl/.fehbg &
+source $HOME/.fehbg
