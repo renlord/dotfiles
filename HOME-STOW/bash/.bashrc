@@ -58,6 +58,7 @@ alias ll="ls -la"
 
 export PATH=${PATH}:"$HOME/.local/bin":"$HOME/Desktop/"
 export EDITOR=nvim
+export SYSTEMD_EDITOR=nvim
 export DOTFILE_DIR=$HOME/dotfiles/
 
 ##############################################
