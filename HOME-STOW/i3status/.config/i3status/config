@@ -47,8 +47,8 @@ run_watch DHCP {
 }
 
 path_exists VPN {
-    path = "/proc/sys/net/ipv4/conf/tun0"
-    format = "PIA "
+    path = "/proc/sys/net/ipv4/conf/nordlynx"
+    format = "VPN "
 }
 
 path_exists wg0 {
