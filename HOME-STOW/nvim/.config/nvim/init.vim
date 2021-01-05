@@ -1,7 +1,7 @@
-set runtimepath+=~/.nvim,~/.nvim/after
-set packpath+=~/.nvim
+set runtimepath+=~/.vim,~/.vim/after
+set packpath+=~/.vim
 
-call plug#begin('~/.nvim/plugged')
+call plug#begin('~/.vim/plugged')
 " The following are examples of different formats supported.
 " Keep Plug commands between vundle#begin/end.
 " plugin on GitHub repo
@@ -39,6 +39,7 @@ Plug 'morhetz/gruvbox'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mileszs/ack.vim'
 Plug 'junegunn/goyo.vim'
+Plug 'cespare/vim-toml'
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -87,6 +88,7 @@ filetype plugin on
 """"""""""""""""""""""""""""""""""""""""""""""""
 
 function SetEnglishOptions()
+    set spelllang=en_us
     map ^T :w!<CR>:!aspell check %<CR>:e! %<CR>
 endfunction
 autocmd Filetype tex call SetEnglishOptions()
@@ -188,7 +190,7 @@ xnoremap <C-k>     <Plug>(neosnippet_expand_target)
 " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-let g:neosnippet#snippets_directory='~/.nvim/bundle/vim-snippets/snippets'
+let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
 " Enable snipMate compatibility feature.
 let g:neosnippet#enable_snipmate_compatibility = 1
 
