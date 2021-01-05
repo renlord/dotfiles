@@ -1,2 +1,2 @@
 #!/bin/sh
-feh --no-fehbg --bg-scale '/home/renlord/Desktop/bitcoin-desktop.jpg' 
+feh --no-fehbg --bg-max '/home/rl/Pictures/sol.png' 
