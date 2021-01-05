@@ -174,6 +174,9 @@ bindsym $mod+p exec /usr/bin/i3lock-fancy
 workspace 10 output DP-1
 workspace 1 output HDMI-0
 
+# monitor setup
+bindsym $mod+Mod1+1 exec autorandr -l SINGLE
+bindsym $mod+Mod1+2 exec autorandr -l DUAL-HOME
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
