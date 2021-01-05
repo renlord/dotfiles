@@ -4,6 +4,8 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+set +x 
+
 # nvm stuff
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -60,6 +62,7 @@ export PATH=${PATH}:"$HOME/.local/bin":"$HOME/Desktop/"
 export EDITOR=nvim
 export SYSTEMD_EDITOR=nvim
 export DOTFILE_DIR=$HOME/dotfiles/
+export TERM=xterm-256color
 
 ##############################################
 # Bash AUX

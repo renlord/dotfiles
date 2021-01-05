@@ -1,12 +1,12 @@
 [options]
-#allow_bold = true
+allow_bold = true
 #audible_bell = false
-#bold_is_bright = true
+bold_is_bright = true
 #cell_height_scale = 1.0
 #cell_width_scale = 1.0
 clickable_url = true
 dynamic_title = true
-font = Hack Regular 10
+font = Hack Regular 10.5
 #fullscreen = true
 icon_name = terminal
 #mouse_autohide = false
@@ -48,8 +48,8 @@ browser = xdg-open
 
 #foreground = #dcdccc
 #foreground_bold = #ffffff
-background = #000000
-foreground = #eaeaea
+background = #1D1F21
+foreground = #C5C8C6
 
 # 20% background transparency (requires a compositor)
 #background = rgba(63, 63, 63, 0.8)
@@ -57,23 +57,38 @@ foreground = #eaeaea
 # If unset, will reverse foreground and background
 highlight = #2f2f2f
 
-# Colors from color0 to color254 can be set
-color0 = #3f3f3f
-color1 = #705050
-color2 = #60b48a
-color3 = #dfaf8f
-color4 = #506070
-color5 = #dc8cc3
-color6 = #8cd0d3
-color7 = #dcdccc
-color8 = #709080
-color9 = #dca3a3
-color10 = #c3bf9f
-color11 = #f0dfaf
-color12 = #94bff3
-color13 = #ec93d3
-color14 = #93e0e3
-color15 = #ffffff
+# black
+color0  = #282a2e
+color8  = #373b41
+
+# red
+color1  = #a54242
+color9  = #cc6666
+
+# green
+color2  = #8c9440
+color10 = #b5bd68
+
+# yellow
+color3  = #de935f
+color11 = #f0c674
+
+# blue
+color4  = #5f819d
+color12 = #81a2be
+
+# magenta
+color5  = #85678f
+color13 = #b294bb
+
+# cyan
+color6  = #5e8d87
+color14 = #8abeb7
+
+# white
+color7  = #707880
+color15 = #c5c8c6
+
 
 [hints]
 #font = Monospace 12
