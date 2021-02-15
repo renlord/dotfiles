@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+usage() {
+cat << EOF
+doscan
+    -?                 prints this help
+    -n [filename]      sets file name to argument (default: SCAN-\$date.pdf)
+    -2                 duplex, 2-sided scan (default: simplex, 1-sided scan)
+    -c                 toggle colour scanning (default: greyscale)
+    -h                 sets scan height for scan document (default: A4 297mm)
+    -r                 sets scan resolution for scan document (default: 300)
+EOF
+}
+
+while getopts "hn:12cr:" arg; do
+    case $arg in
+        n)
+            # set filename
+            filename="${OPTARG}"
+            echo "saving file to ${filename}"
+            ;;
+        2)
+            mode="duplex"
+            ;;
+        r)
+            res=${OPTARG}
+            ;;
+        ? | *)
+            # display help
+            usage
+            exit 0
+            ;;
+    esac
+done
+
+date="$(date +%Y%m%d_%H%M%S)"
+: "${mode:=simplex}"
+: "${filename:=''}"
+: "${color:=Gray}"
+: "${height:=297}"
+: "${res:=300}"
+: "${scantype:=doc}"
+
+scanf() {
+cat << EOF
+configuration:
+    mode:       $mode
+    filename:   $filename
+    color:      $color
+    height:     $height
+    resolution: $res
+    scantype:   $scantype
+EOF
+    SCAN_DIR="SCAN-$(date +%Y%m%d_%H%M%S)"
+    DATE="$(date +%Y%m%d_%H%M%S)"
+    mkdir "${SCAN_DIR}"
+    cd "${SCAN_DIR}" || exit 1
+    echo "Scanning to DIR: $(pwd)"
+    [ -z $mode ] && exit_cmd
+    [ -z $height ] && height=297
+    [ -z $color ] && color="Gray"
+    [ -z $res ] && res=300
+    [ -z $scantype ] && scantype="doc"
+    case $mode in
+        simplex)
+            scanimage -d fujitsu --format pnm --page-height $height --mode $color --resolution $res --batch="%d.pnm" --ald=yes
+            ;;
+        duplex)
+            scanimage -d fujitsu --format pnm --page-height $height --mode $color  --resolution $res --batch="%d.pnm" --ald=yes --source "ADF Duplex"
+            ;;
+    esac
+    echo "scan completed"
+    COUNT="$(ls ./*.pnm | wc -l)"
+    local _i=1
+    echo "converting $COUNT pnm files to pdf"
+    while [ "$COUNT" -ne 0 ]; do
+        _fs=$(ls -v ./*.pnm | head -n 10)
+        echo $_fs
+        convert -density $res $_fs $_i.pdf
+        rm $(ls -v ./*.pnm | head -n 10)
+        _i=$((_i+1))
+        COUNT="$(ls ./*.pnm | wc -l)"
+    done
+    echo "merging pdf to single file"
+    [ -z "$NAME" ] && NAME="SCAN"
+    _scanoutput="$NAME-$DATE-$scantype.pdf"
+    pdftk $(ls -v ./*.pdf) output "$_scanoutput"
+    if [ -n "${filename}" ]; then
+        mv $_scanoutput ${filename}
+        mv ${filename} ../
+    else
+        mv "$_scanoutput" ../
+    fi
+    cd ..
+    rm -rf "${SCAN_DIR}"
+    echo "SCAN COMPLETE"
+}
+
+scanf
+
+unset scanf
