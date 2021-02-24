@@ -1,6 +1,8 @@
 [Unit]
 Description=Redshift display colour temperature adjustment
 Documentation=http://jonls.dk/redshift/
+After=i3wm-xsession.target
+Requires=i3wm-xsession.target
 
 [Service]
 Environment=DISPLAY=:0
