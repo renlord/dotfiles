@@ -12,15 +12,21 @@ doscan
 EOF
 }
 
-while getopts "hn:12cr:" arg; do
+while getopts "12cn:r:" arg; do
     case $arg in
+        1)
+            mode="simplex"
+            ;;
+        2)
+            mode="duplex"
+            ;;
+        c)
+            color="Color"
+            ;;
         n)
             # set filename
             filename="${OPTARG}"
             echo "saving file to ${filename}"
-            ;;
-        2)
-            mode="duplex"
             ;;
         r)
             res=${OPTARG}
@@ -35,7 +41,7 @@ done
 
 date="$(date +%Y%m%d_%H%M%S)"
 : "${mode:=simplex}"
-: "${filename:=''}"
+: "${filename:=SCAN_$DATE.pdf}"
 : "${color:=Gray}"
 : "${height:=297}"
 : "${res:=300}"
