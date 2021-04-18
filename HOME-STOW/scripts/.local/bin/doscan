@@ -9,10 +9,12 @@ doscan
     -c                 toggle colour scanning (default: greyscale)
     -h                 sets scan height for scan document (default: A4 297mm)
     -r                 sets scan resolution for scan document (default: 300)
+    -t                 document scan type [supports: doc (MERGE as single PDF)/photo (standalone JPEGs)] (default: doc)
+    -D                 debug, dry run
 EOF
 }
 
-while getopts "12cn:r:" arg; do
+while getopts "12cmDn:r:t:h:w:" arg; do
     case $arg in
         1)
             mode="simplex"
@@ -23,6 +25,24 @@ while getopts "12cn:r:" arg; do
         c)
             color="Color"
             ;;
+        t)
+            scantype="${OPTARG}"
+            case $scantype in
+                photo)
+                    echo "scanning doctype ${scantype}"
+                    ;;
+                doc)
+                    echo "scanning doctype ${scantype}"
+                    ;;
+                *)
+                    echo "UNSUPPORTED filetype, BAILING"
+                    usage
+                    ;;
+            esac
+            ;;
+        h)
+            height="${OPTARG}"
+            ;;
         n)
             # set filename
             filename="${OPTARG}"
@@ -30,6 +50,9 @@ while getopts "12cn:r:" arg; do
             ;;
         r)
             res=${OPTARG}
+            ;;
+        D)
+            dryrun=1
             ;;
         ? | *)
             # display help
@@ -39,15 +62,15 @@ while getopts "12cn:r:" arg; do
     esac
 done
 
-date="$(date +%Y%m%d_%H%M%S)"
+date="$(date +%Y%m%d-%H%M%S)"
 : "${mode:=simplex}"
-: "${filename:=SCAN_$DATE.pdf}"
+: "${filename:=SCAN_$date.pdf}"
 : "${color:=Gray}"
 : "${height:=297}"
 : "${res:=300}"
 : "${scantype:=doc}"
+: "${dryrun:=0}"
 
-scanf() {
 cat << EOF
 configuration:
     mode:       $mode
@@ -56,26 +79,10 @@ configuration:
     height:     $height
     resolution: $res
     scantype:   $scantype
+    dryrun:     $dryrun
 EOF
-    SCAN_DIR="SCAN-$(date +%Y%m%d_%H%M%S)"
-    DATE="$(date +%Y%m%d_%H%M%S)"
-    mkdir "${SCAN_DIR}"
-    cd "${SCAN_DIR}" || exit 1
-    echo "Scanning to DIR: $(pwd)"
-    [ -z $mode ] && exit_cmd
-    [ -z $height ] && height=297
-    [ -z $color ] && color="Gray"
-    [ -z $res ] && res=300
-    [ -z $scantype ] && scantype="doc"
-    case $mode in
-        simplex)
-            scanimage -d fujitsu --format pnm --page-height $height --mode $color --resolution $res --batch="%d.pnm" --ald=yes
-            ;;
-        duplex)
-            scanimage -d fujitsu --format pnm --page-height $height --mode $color  --resolution $res --batch="%d.pnm" --ald=yes --source "ADF Duplex"
-            ;;
-    esac
-    echo "scan completed"
+
+merge() {
     COUNT="$(ls ./*.pnm | wc -l)"
     local _i=1
     echo "converting $COUNT pnm files to pdf"
@@ -99,9 +106,50 @@ EOF
     fi
     cd ..
     rm -rf "${SCAN_DIR}"
-    echo "SCAN COMPLETE"
+}
+
+scanf() {
+    SCAN_DIR="SCAN-$(date +%Y%m%d_%H%M%S)"
+    DATE="$(date +%Y%m%d_%H%M%S)"
+    mkdir "${SCAN_DIR}"
+    cd "${SCAN_DIR}" || exit 1
+    echo "Scanning to DIR: $(pwd)"
+    [ -z $mode ] && exit_cmd
+    [ -z $height ] && height=297
+    [ -z $color ] && color="Gray"
+    [ -z $res ] && res=300
+    [ -z $scantype ] && scantype="doc"
+
+    CMD="scanimage -d fujitsu --page-height $height --mode $color --resolution $res"
+    case $scantype in
+        doc)
+            CMD="$CMD --format pnm --batch='%d.pnm' --ald=yes"
+            ;;
+        photo)
+            batchstart=$(ls | sort -h | tail -n1 | cut -d\. -f1)
+            [ -z $batchstart ] && echo "cant get batchstart" && exit 1
+            CMD="$CMD --format jpeg --batch='%d.jpg' --batch-start=$batchstart --ald=yes --swcrop=yes"
+            ;;
+    esac
+
+    case $mode in
+        simplex)
+            CMD="$CMD"
+            ;;
+        duplex)
+            CMD="$CMD --source 'ADF Duplex'"
+            ;;
+    esac
+    [ "$dryrun" -eq 1 ] && echo "DRYRUN CMD: $CMD" && exit 0
+    sh -c "$CMD"
+    echo "scan completed"
 }
 
 scanf
 
+if [ $scantype = "doc" ]; then
+    merge
+fi
+
 unset scanf
+unset merge
