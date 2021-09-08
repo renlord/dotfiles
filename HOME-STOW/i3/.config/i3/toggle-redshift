@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+( [ "$(systemctl --user is-active redshift)" == "active" ] && notify-send "Redshift: Stopping" && systemctl --user stop redshift) \
+    || (notify-send "Redshift: Starting" && systemctl --user start redshift)

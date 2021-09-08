@@ -31,6 +31,9 @@ floating_modifier $mod
 # start a terminal
 bindsym $mod+Return exec "systemd-run --user -E DISPLAY=:0 alacritty"
 
+# disable redshift
+bindsym $mod+Mod1+n exec "$HOME/.config/i3/toggle-redshift"
+
 # kill focused window
 bindsym $mod+Shift+q kill
 
