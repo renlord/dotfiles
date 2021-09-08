@@ -29,7 +29,7 @@ font pango:DejaVu Sans Mono 9
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec "termite"
+bindsym $mod+Return exec "systemd-run --user -E DISPLAY=:0 alacritty"
 
 # kill focused window
 bindsym $mod+Shift+q kill
