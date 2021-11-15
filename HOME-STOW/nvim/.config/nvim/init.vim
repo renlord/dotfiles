@@ -5,18 +5,10 @@ call plug#begin('~/.vim/plugged')
 " The following are examples of different formats supported.
 " Keep Plug commands between vundle#begin/end.
 " plugin on GitHub repo
-if has('nvim')
-    Plug 'Shougo/deoplete.nvim', {'do': 'UpdateRemotePlugins'} 
-else
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
-endif
-" Duoplete Misc. Language Extensions
-Plug 'sebastianmarkow/deoplete-rust'
 
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
+" autocompletion, lint, static analysis
 Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
@@ -40,6 +32,7 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'mileszs/ack.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'cespare/vim-toml'
+Plug 'saltstack/salt-vim'
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -90,6 +83,8 @@ filetype plugin on
 function SetEnglishOptions()
     set spelllang=en_us
     map ^T :w!<CR>:!aspell check %<CR>:e! %<CR>
+    hi clear SpellBad
+    hi SpellBad cterm=underline
 endfunction
 autocmd Filetype tex call SetEnglishOptions()
 autocmd Filetype mail call SetEnglishOptions()
@@ -108,7 +103,7 @@ inoremap <PageDown> <NOP>
 
 nnoremap j gj
 nnoremap k gk
-nnoremap <c-s-b> :CtrlPBuffer<CR>
+nnoremap <silent> <c-b> :CtrlPBuffer<CR>
 
 " Use ctrl-[hjkl] to select the active split!
 nnoremap <silent> <c-k> :wincmd k<CR>
@@ -166,8 +161,8 @@ nnoremap <silent> <A-k> <Plug>(ale_previous_wrap)
 nnoremap <silent> <A-j> <Plug>(ale_next_wrap)
 
 " Duoplete
-let g:deoplete#enable_at_startup = 1
-let g:airline#extensions#ale#enabled = 1
+" let g:deoplete#enable_at_startup = 1
+" let g:airline#extensions#ale#enabled = 1
 
 " VimTex
 let g:tex_flavor='latex'
@@ -230,6 +225,9 @@ endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 nnoremap <silent> ff :Goyo <CR>
+
+" run gofmt for golang file
+au BufWritePost *.go !gofmt -w %
 
 " Rust.vim 
 let g:rustfmt_autosave = 1
