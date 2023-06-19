@@ -8,31 +8,41 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
-" autocompletion, lint, static analysis
-Plug 'w0rp/ale'
+"Language Server Support -- lint, static analysis
+Plug 'neovim/nvim-lspconfig'
+"autocompletion: main one
+Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+" 9000+ Snippets
+Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+" Git: wrapper inside vim
 Plug 'tpope/vim-fugitive'
+" Nice vimbar
 Plug 'vim-airline/vim-airline'
+" Reads .editorconfig to enforce developer editor styling
 Plug 'editorconfig/editorconfig-vim'
+" This plug-in provides automatic closing of quotes, parenthesis, brackets, etc
 Plug 'Raimondi/delimitMate'
+" Nicer colors
 Plug 'flazz/vim-colorschemes'
+" Nerdtree: file browser inside nvim
 Plug 'scrooloose/nerdtree'
-Plug 'git://github.com/ctrlpvim/ctrlp.vim.git'
-Plug 'pangloss/vim-javascript'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'Chiel92/vim-autoformat'
+" Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
+Plug 'ctrlpvim/ctrlp.vim'
+" This plugin provides the following mappings which allow you to move between
+" Vim panes and tmux splits seamlessly.
+Plug 'alexghergh/nvim-tmux-navigation'
+" Vimux: easily interact with tmux from vim
 Plug 'benmills/vimux'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
-Plug 'tomlion/vim-solidity'
-Plug 'ludovicchabant/vim-gutentags'
+" VimTeX: is a modern Vim and Neovim filetype and syntax plugin for LaTeX files.
 Plug 'lervag/vimtex'
+" Jinja junk
+Plug 'lepture/vim-jinja'
+Plug 'vmware-archive/salt-vim'
+
 Plug 'junegunn/fzf'
 Plug 'morhetz/gruvbox'
-Plug 'dhruvasagar/vim-table-mode'
 Plug 'mileszs/ack.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'cespare/vim-toml'
-Plug 'saltstack/salt-vim'
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -101,15 +111,17 @@ inoremap <PageUp> <NOP>
 noremap <PageDown> <NOP>
 inoremap <PageDown> <NOP>
 
-nnoremap j gj
-nnoremap k gk
-nnoremap <silent> <c-b> :CtrlPBuffer<CR>
-
 " Use ctrl-[hjkl] to select the active split!
 nnoremap <silent> <c-k> :wincmd k<CR>
 nnoremap <silent> <c-j> :wincmd j<CR>
 nnoremap <silent> <c-h> :wincmd h<CR>
 nnoremap <silent> <c-l> :wincmd l<CR>
+
+nnoremap j gj
+nnoremap k gk
+nnoremap <silent> <c-b> :CtrlPBuffer<CR>
+
+nnoremap <leader>sv :source $MYVIMRC<CR>
 
 " Leader
 :let mapleader = ";"
@@ -130,43 +142,11 @@ endif
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 
-" ALE
-let g:ale_fix_on_save = 1
-let g:ale_completion_enabled = 1
-let g:ale_linters = {
-\   'javascript': ['eslint'],
-\   'rust': ['analyzer', 'rls'],
-\   'c': ['clangd'],
-\   'cpp': ['clangd'],
-\   'sh': ['shellcheck'],
-\   'go': ['gopls']
-\}
-" Enable completion where available.
-" This setting must be set before ALE is loaded.
-"
-" You should not turn this setting on if you wish to use ALE as a completion
-" source for other completion plugins, like Deoplete.
-set omnifunc=ale#completion#OmniFunc
 
-" ALE Keymaps <Alt> key designated for ALE
-"nnoremap <A-s> :ALESymbolSearch
-"nnoremap <silent> <A-d> :ALEGoToDefinition<CR>
-"nnoremap <silent> <A-r> :ALEFindReferences<CR>
-nnoremap gs :ALESymbolSearch
-nnoremap <silent> gd :ALEGoToDefinition<CR>
-nnoremap <silent> gr :ALEFindReferences<CR>
-
-
-nnoremap <silent> <A-k> <Plug>(ale_previous_wrap)
-nnoremap <silent> <A-j> <Plug>(ale_next_wrap)
-
-" Duoplete
-" let g:deoplete#enable_at_startup = 1
-" let g:airline#extensions#ale#enabled = 1
 
 " VimTex
 let g:tex_flavor='latex'
-let g:vimtex_view_method='zathura'
+let g:vimtex_view_method='open'
 let g:vimtex_quickfix_mode=0
 let g:tex_conceal='abdmg'
 let g:vimtex_compiler_progname = 'nvr'
@@ -191,9 +171,6 @@ let g:neosnippet#enable_snipmate_compatibility = 1
 
 " NERDTree
 map <C-n> :NERDTreeToggle<CR>
-
-"Gutentags
-let g:gutentags_define_advanced_commands=1
 
 " Goyo config
 let g:goyo_width=120
@@ -229,5 +206,100 @@ nnoremap <silent> ff :Goyo <CR>
 " run gofmt for golang file
 au BufWritePost *.go !gofmt -w %
 
-" Rust.vim 
+" Rust.vim
 let g:rustfmt_autosave = 1
+
+" ctrlp settings
+nnoremap <silent> <c-b> :CtrlPBuffer<CR>
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
+
+lua <<EOF
+-- Setup lspconfig
+-- Mappings.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+local opts = { noremap=true, silent=true }
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+vim.g.coq_settings = {
+  keymap = {
+    recommended = false,
+    jump_to_mark = '',
+    pre_select = true,
+  },
+  auto_start = true,
+  display = {
+    pum = {
+      fast_close = false
+    }
+  }
+}
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  local bufopts = { noremap=true, silent=true, buffer=bufnr }
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+  vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+  vim.keymap.set('n', '<space>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  end, bufopts)
+  vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+  vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+  vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+  vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
+end
+
+local lsp_flags = {
+  -- This is the default in Nvim 0.7+
+  debounce_text_changes = 150,
+}
+require('lspconfig')['pyright'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+}
+require('lspconfig')['tsserver'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+}
+require('lspconfig')['gopls'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+}
+require('lspconfig')['rust_analyzer'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+    -- Server-specific settings...
+    settings = {
+      ["rust-analyzer"] = {}
+    }
+}
+
+require'nvim-tmux-navigation'.setup {
+    disable_when_zoomed = true, -- defaults to false
+    keybindings = {
+        left = "<C-h>",
+        down = "<C-j>",
+        up = "<C-k>",
+        right = "<C-l>",
+        last_active = "<C-\\>",
+        next = "<C-Space>",
+    }
+}
+
+
+EOF
+
